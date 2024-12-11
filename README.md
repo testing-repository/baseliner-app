@@ -1,6 +1,6 @@
 # Projekt rekrutacyjny do firmy Baselinker
 
-**Witam serdecznie starałem się wykonać wszystkie zadania, które zostały określone w tym projekcie. Wierzę, że zrealizowałem wszystkie założenia, chyba że niezamierzenie mogłem coś źle zrozumieć. Poniżej przedstawiam główne założenia projektu oraz opis, w jaki sposób zostały one zaimplementowane:**
+**Witam serdecznie, starałem się wykonać wszystkie zadania, które zostały określone w tym projekcie. Wierzę, że zrealizowałem wszystkie założenia, chyba że niezamierzenie mogłem coś źle zrozumieć. Poniżej przedstawiam główne założenia projektu oraz opis, w jaki sposób zostały one zaimplementowane:**
 
 ### Wymagania projektu i moje wykonanie:
 
