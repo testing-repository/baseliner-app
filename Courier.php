@@ -29,10 +29,17 @@ class Courier {
         $response = $this->sendApiRequest($postData);
 
         if (isset($response['ErrorLevel']) && $response['ErrorLevel'] !== 0) {
-            $this->outputError("API Error: " . ($response['Error'] ?? "Unknown error"));
+            $this->outputError(
+                "The API responded with an error.",
+                $response['Error'] ?? "No additional information provided."
+            );
         }
 
-        return $response['Shipment']['TrackingNumber'] ?? $this->outputError("Tracking number not received.");
+        return $response['Shipment']['TrackingNumber'] 
+            ?? $this->outputError(
+                "Tracking number could not be retrieved.",
+                "The API response did not include a tracking number."
+            );
     }
 
     /**
@@ -54,20 +61,25 @@ class Courier {
         $response = $this->sendApiRequest($postData);
 
         if (isset($response['ErrorLevel']) && $response['ErrorLevel'] !== 0) {
-            $this->outputError("API Error: " . ($response['Error'] ?? "Unknown error"));
+            $this->outputError(
+                "The API responded with an error.",
+                $response['Error'] ?? "No additional information provided."
+            );
         }
 
         if (isset($response['Shipment']['LabelImage'])) {
             $labelPdf = base64_decode($response['Shipment']['LabelImage']);
             if (empty($labelPdf)) {
-                throw new Exception("Failed to decode the label image or the label is empty.");
+                throw new Exception("Label decoding failed: The label image is either corrupted or empty.");
             }
-
+            
             $this->outputPdf($labelPdf);
         } else {
-            $this->outputError("Label not found in the response.");
+            $this->outputError(
+                "Shipment label could not be found.",
+                "Ensure that the tracking number is correct and try again."
+            );
         }
-
     }
 
     /**
@@ -87,7 +99,9 @@ class Courier {
         $splitedAddress = $this->splitAddress($receiver['AddressLine1'], $limits);
     
         if (!empty($splitedAddress['overflow'])) {
-            throw new Exception("Address too long for the selected service ({$params['Service']}).");
+            throw new Exception(
+                "Address is too long for the selected service. Service: {$params['Service']} - Ensure the address fits within character limits."
+            );
         }
     
         $this->updateReceiverAddress($receiver, $splitedAddress);
@@ -185,7 +199,10 @@ class Courier {
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            $this->outputError("Connection error: " . curl_error($ch));
+            $this->outputError(
+                "Failed to connect to the API.",
+                "CURL Error: " . curl_error($ch)
+            );
         }
 
         curl_close($ch);
@@ -210,9 +227,15 @@ class Courier {
      * Outputs an error message and stops execution.
      *
      * @param string $message The error message to display.
+     * @param string|null $details Optional additional details for the error.
      */
-    private function outputError(string $message): void {
-        echo "<h3>$message</h3>";
+    private function outputError(string $message, ?string $details = null): void {
+        echo "<div style='border: 1px solid red; padding: 10px; margin: 10px;'>";
+        echo "<h3 style='color: red;'>Error: $message</h3>";
+        if ($details) {
+            echo "<p style='color: gray;'>Details: $details</p>";
+        }
+        echo "</div>";
         exit;
     }
 }
