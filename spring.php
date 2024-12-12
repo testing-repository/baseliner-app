@@ -54,5 +54,9 @@ try {
     // Retrieving and displaying the label
     $courier->packagePDF($trackingNumber);
 } catch (Exception $e) {
-    echo "<h3>Error: " . htmlspecialchars($e->getMessage()) . "</h3>";
+    echo "<div style='border: 2px solid #ff4d4d; background-color: #ffe6e6; padding: 15px; border-radius: 5px; font-family: Arial, sans-serif;'>
+        <h3 style='color: #b30000;'>Error Encountered</h3>
+        <p><strong>Message:</strong> " . htmlspecialchars($e->getMessage()) . "</p>
+        <p style='color: #666;'>Please review the provided data and try again. If the issue persists, contact support.</p>
+    </div>";
 }
